@@ -1,6 +1,7 @@
 # car-dheko
-##**Car Dheko: Used Car Price Prediction
-##**Objective
+##**Car Dheko: Used Car Price Prediction**
+
+##**Objective**
 The goal of this project is to enhance the customer experience and streamline the pricing process for used cars by leveraging machine learning. We aim to develop a machine learning model that predicts the prices of used cars based on various features. This model will be integrated into an interactive web application using Streamlit, allowing customers and sales representatives to easily obtain estimated prices for used cars.
 
 ##**Project Scope**
