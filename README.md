@@ -1,41 +1,60 @@
 # car-dheko
-###**Car Dheko: Used Car Price Prediction**
+**Car Dheko: Used Car Price Prediction**
 
-###**Objective**
+**Objective**
 The goal of this project is to enhance the customer experience and streamline the pricing process for used cars by leveraging machine learning. We aim to develop a machine learning model that predicts the prices of used cars based on various features. This model will be integrated into an interactive web application using Streamlit, allowing customers and sales representatives to easily obtain estimated prices for used cars.
 
-##**Project Scope**
-##**Data Processing**
+**Project Scope**
+
+**Data Processing**
 
 **Import and Concatenate:** Import and concatenate datasets from different cities into a structured format.
+
 **Handling Missing Values:** Identify and handle missing values   using appropriate imputation techniques.
+
 **Standardizing Data Formats:** Ensure data is in the correct format by converting units and adjusting data types.
+
 **Encoding Categorical Variables:** Convert categorical features into numerical values using encoding techniques.
+
 **Normalizing Numerical Features:** Scale numerical features using normalization techniques.
+
 **Removing Outliers:** Detect and handle outliers to avoid skewing the model.
-##**Exploratory Data Analysis (EDA)**
+
+**Exploratory Data Analysis (EDA)**
 
 **Descriptive Statistics:** Calculate summary statistics to understand data distribution.
+
 **Data Visualization:** Use visualizations to identify patterns and correlations in the data.
+
 **Feature Selection:** Identify and select important features impacting car prices.
-##**Model Development**
+
+**Model Development**
 
 **Train-Test Split:** Split the dataset into training and testing sets.
+
 **Model Selection:** Choose and train appropriate machine learning algorithms for price prediction.
+
 **Hyperparameter Tuning:** Optimize model parameters using techniques like Grid Search or Random Search.
-##**Model Evaluation**
+
+**Model Evaluation**
 
 **Performance Metrics:** Evaluate the model using metrics such as MAE, MSE, and R-squared.
+
 **Model Comparison:** Compare different models to select the best-performing one.
-##**Optimization**
+
+**Optimization**
 
 **Feature Engineering:** Create or modify features to enhance model performance.
+
 **Regularization:** Apply regularization techniques to prevent overfitting.
-##**Deployment**
+
+**Deployment**
 
 **Streamlit Application:** Deploy the model using Streamlit to create an interactive web application.
+
 **User Interface Design:** Design a user-friendly and intuitive interface for easy interaction.
-##**Approach**
+
+**Approach**
 ##**Data Processing**
 **Import and Concatenate:** Load datasets from different cities, convert them to a structured format, add a 'City' column, and concatenate them into a single dataset.
 **Handle Missing Values:** Use mean, median, mode imputation for numerical columns, and mode imputation or create a new category for categorical columns.
