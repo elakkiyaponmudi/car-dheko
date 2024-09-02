@@ -74,21 +74,21 @@ Input car features into the provided fields.
 
 Receive real-time price predictions based on the entered details.
 
-Requirements
-Python 3.6+
+**Requirements**
+-Python 3.6+
 
-Pandas
+-Pandas
 
-Scikit-learn
+-Scikit-learn
 
-Streamlit
+-Streamlit
 
-Repository Structure
+**Repository Structure**
 
-data/: Contains raw and processed data files.
+**Data/:** Contains raw and processed data files.
 
-notebooks/: Jupyter notebooks for exploratory data analysis and model development.
+**car_dheko.ipynb:** Jupyter notebooks for exploratory data analysis and model development.
 
-streamlit app.py: Streamlit application for real-time predictions.
+**streamlit app.py:** Streamlit application for real-time predictions.
 
-requirements.txt: List of Python package dependencies.
+
