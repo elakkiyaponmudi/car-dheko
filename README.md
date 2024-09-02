@@ -108,20 +108,8 @@ The goal of this project is to enhance the customer experience and streamline th
 **Usage**
 
 **Run the Streamlit App:**
-Ensure you have Streamlit installed. If not, install it using:
-**bash**
-
-**Copy code**
-
+Ensure you have Streamlit installed. If not, install it using 
 **pip install streamlit**
-
-**Navigate to the directory containing the app.py file and run:**
-
-**bash**
-
-**Copy code**
-
-**streamlit run app.py**
 
 **Interact with the Application:**
 Input car features into the provided fields.
