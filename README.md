@@ -71,14 +71,24 @@ Ensure you have Streamlit installed. If not, install it using
 
 **Interact with the Application:**
 Input car features into the provided fields.
+
 Receive real-time price predictions based on the entered details.
+
 Requirements
 Python 3.6+
+
 Pandas
+
 Scikit-learn
+
 Streamlit
+
 Repository Structure
+
 data/: Contains raw and processed data files.
+
 notebooks/: Jupyter notebooks for exploratory data analysis and model development.
+
 streamlit app.py: Streamlit application for real-time predictions.
+
 requirements.txt: List of Python package dependencies.
