@@ -1,92 +1,101 @@
+import streamlit as st
 import pandas as pd
 import numpy as np
-from sklearn.impute import SimpleImputer
-from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.ensemble import GradientBoostingRegressor
-from sklearn.metrics import r2_score, mean_squared_error
-from sklearn.preprocessing import StandardScaler
 import joblib
+from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 
-# Load the dataset
-df = pd.read_csv("selected_features_correlation_matrix.csv")
+# Load the pre-trained model
+model = joblib.load("C:/Users/Elakkiya/Downloads/gradient_boosting_model.joblib")
 
-# Step 1: Feature Engineering
+# Load the dataset to get unique values for dropdowns
+data = pd.read_csv("C:/Users/Elakkiya/Downloads/dropped_dataset.csv")
 
-# Create a new feature 'car_age' from 'modelYear'
-df['car_age'] = 2024 - df['modelYear']
+# Initialize LabelEncoder and MinMaxScaler
+label_encoders = {}
+scalers = {}
 
-# Create a new feature 'km_per_year' by dividing 'km' by 'car_age'
-df['km_per_year'] = df['km'] / df['car_age']
+# Create LabelEncoders for categorical features
+categorical_features = ['ft', 'bt', 'transmission', 'ownerNo', 'oem', 'model', 'centralVariantId', 'variantName']
+for feature in categorical_features:
+    le = LabelEncoder()
+    le.fit(data[feature].astype(str))
+    label_encoders[feature] = le
 
-# Interaction feature: Create a feature by multiplying 'Engine Displacement' with 'Mileage'
-df['engine_displacement_mileage'] = df['Engine Displacement'] * df['Mileage']
+# Create MinMaxScaler for numerical features
+numerical_features = ['Engine Displacement', 'Mileage', 'car_age', 'km_per_year', 'engine_displacement_mileage', 'log_km']
+scalers['numerical'] = MinMaxScaler()
+data['car_age'] = 2024 - data['modelYear']
+data['km_per_year'] = data['km'] / data['car_age']
+data['engine_displacement_mileage'] = data['Engine Displacement'] * data['Mileage']
+data['log_km'] = np.log1p(data['km'])
+data = data.drop(columns=['km'])
+scalers['numerical'].fit(data[numerical_features])
 
-# Log transformation: Apply log transformation to 'km' to reduce skewness
-df['log_km'] = np.log1p(df['km'])
+# Streamlit app interface
+st.title("Used Car Price Prediction")
 
-# Drop the original 'km' column after log transformation
-df = df.drop(columns=['km'])
+# Sidebar input fields for specific features
+with st.sidebar:
+    ft = st.selectbox("Fuel Type", options=sorted(data['ft'].dropna().unique()))
+    bt = st.selectbox("Body Type", options=sorted(data['bt'].dropna().unique()))
+    transmission = st.selectbox("Transmission", options=sorted(data['transmission'].dropna().unique()))
+    ownerNo = st.selectbox("Owner Number", options=sorted(data['ownerNo'].dropna().unique()))
+    oem = st.selectbox("OEM", options=sorted(data['oem'].dropna().unique()))
+    model_selected = st.selectbox("Model", options=sorted(data['model'].dropna().unique()))
+    modelYear = st.selectbox("Model Year", options=sorted(data['modelYear'].dropna().unique()))
+    centralVariantId = st.selectbox("Central Variant ID", options=sorted(data['centralVariantId'].dropna().unique()))
+    variantName = st.selectbox("Variant Name", options=sorted(data['variantName'].dropna().unique()))
+    Engine_Displacement = st.selectbox("Engine Displacement", options=sorted(data['Engine Displacement'].dropna().unique()))
+    Mileage = st.selectbox("Mileage", options=sorted(data['Mileage'].dropna().unique()))
+    car_age = 2024 - int(modelYear)  # Calculate car age
 
-# Define features and target variable
-features = ['car_age', 'km_per_year', 'engine_displacement_mileage', 'log_km',
-            'Engine Displacement', 'Mileage', 'modelYear', 'centralVariantId', 'variantName', 
-            'ft', 'bt', 'transmission', 'ownerNo', 'oem', 'model']  # Example features
-target = 'price'
+    # Calculate min and max values for kilometers driven per year
+    min_km_per_year = int(data['km_per_year'].min())
+    max_km_per_year = int(data['km_per_year'].max())
 
-# Step 2: Imputation and Scaling
+    # Input for kilometers driven per year
+    km_per_year = st.slider(
+        "Kilometers Driven per Year",
+        min_value=min_km_per_year,
+        max_value=max_km_per_year,
+        value=min_km_per_year
+    )
 
-# Impute missing values with the mean
-imputer = SimpleImputer(strategy='mean')
-X = imputer.fit_transform(df[features])  # Features
+# Calculate additional features
+engine_displacement_mileage = Engine_Displacement * Mileage
+log_km = np.log1p(km_per_year)
 
-# Scale numerical features
-scaler = StandardScaler()
-X = scaler.fit_transform(X)
-
-# Step 3: Train-Test Split
-
-y = df[target]  # Target variable
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-# Step 4: Model Training with Hyperparameter Tuning
-
-# Initialize the Gradient Boosting Regressor
-gbr = GradientBoostingRegressor(random_state=42)
-
-# Define the hyperparameter grid
-param_grid = {
-    'n_estimators': [100, 200, 300],
-    'learning_rate': [0.01, 0.1, 0.2],
-    'max_depth': [3, 5, 7],
-    'min_samples_split': [2, 5, 10],
-    'min_samples_leaf': [1, 2, 4],
-    'max_features': ['sqrt', 'log2', None]
+# Prepare input DataFrame with the transformed features
+input_data = {
+    'ft': [ft],
+    'bt': [bt],
+    'transmission': [transmission],
+    'ownerNo': [ownerNo],
+    'oem': [oem],
+    'model': [model_selected],
+    'modelYear': [modelYear],
+    'centralVariantId': [centralVariantId],
+    'variantName': [variantName],
+    'Engine Displacement': [Engine_Displacement],
+    'Mileage': [Mileage],
+    'car_age': [car_age],
+    'km_per_year': [km_per_year],
+    'engine_displacement_mileage': [engine_displacement_mileage],
+    'log_km': [log_km]
 }
+input_df = pd.DataFrame(input_data)
 
-# Perform GridSearchCV to find the best hyperparameters
-grid_search = GridSearchCV(estimator=gbr, param_grid=param_grid, cv=5, n_jobs=-1, scoring='r2', verbose=2)
-grid_search.fit(X_train, y_train)
+# Perform label encoding for categorical features
+for feature in categorical_features:
+    input_df[feature] = label_encoders[feature].transform(input_df[feature].astype(str))
 
-# Get the best model from GridSearchCV
-best_model = grid_search.best_estimator_
+# Perform Min-Max scaling for numerical features
+input_df[numerical_features] = scalers['numerical'].transform(input_df[numerical_features])
 
-# Step 5: Model Evaluation
-
-# Make predictions on the test set
-y_pred = best_model.predict(X_test)
-
-# Evaluate the model
-r2 = r2_score(y_test, y_pred)
-mse = mean_squared_error(y_test, y_pred)
-rmse = mse ** 0.5
-
-print(f"Best Hyperparameters: {grid_search.best_params_}")
-print(f"R2 Score: {r2}")
-print(f"RMSE: {rmse}")
-
-# Save the model
-output_path = "C:/Users/Elakkiya/Downloads/gradient_boosting_model_1.joblib"
-joblib.dump(best_model, output_path)
-
-print(f"Model saved to {output_path}")
+# Main page prediction button and result display
+if st.button('Predict Price'):
+    try:
+        prediction = model.predict(input_df)
+        st.subheader(f"Estimated Price: {prediction[0]:,.2f}")
+    except Exception as e:
+        st.error(f"Error making prediction: {e}")
